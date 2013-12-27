@@ -8,12 +8,18 @@ import sys
 class InvalidRootError(Exception):
     pass
 
+def getip():
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 80))
+    ip = s.getsockname()[0]
+    s.close()
+    return ip
+
 # Return a complete IP address based on the last part
 def complete_IP(partial):
-    import getip
-    ifaces = getip.get_interfaces()
-    complete = ifaces[0].ip
-    parts = complete.split(".")
+    complete_ip = getip()
+    parts = complete_ip.split(".")
     parts[3] = partial
     return ".".join(parts)
 
