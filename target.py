@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import ipparse
 import os
 
 def parse(tgt):
@@ -24,6 +25,9 @@ class LocalTarget(Target):
         assert os.path.isdir(tgt)
         self.localdir = os.path.realpath(tgt)
 
+    def unison(self):
+        return self.localdir
+
     def __repr__(self):
         return self.localdir
 
@@ -33,7 +37,12 @@ class RemoteTarget(Target):
         self.parse()
 
     def parse(self):
-        pass
+        [self.user, self.ip] = ipparse.parse_dest(self.target)
+
+    def unison(self):
+        ret = "ssh://" + self.user + "@" + self.ip
+        ret += "/" + os.path.join("/home", self.user)
+        return ret
 
     def __repr__(self):
-        return "IP"
+        return self.user + "@" + self.ip
