@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import getpass
 import os
@@ -55,7 +55,7 @@ def parse_dest(dst):
 def main():
     user = ip = None
     if len(sys.argv) != 2:
-        print "Usage: " + sys.argv[0] + " [USER@][IP_SUBNET].IP_HOST"
+        print("Usage: " + sys.argv[0] + " [USER@][IP_SUBNET].IP_HOST")
         sys.exit(1)
 
     root_spec = sys.argv[1]
@@ -63,7 +63,7 @@ def main():
     try:
         user, ip = parse_dest(root_spec)
     except InvalidRootError:
-        print "Error: Invalid root '" + root_spec + "'"
+        print("Error: Invalid root '" + root_spec + "'")
         sys.exit(1)
 
     root1 = os.path.join("/home", getpass.getuser())
@@ -71,7 +71,7 @@ def main():
 
     cmd = ["unison", "homesync", "-root", root1, "-root", root2]
 
-    print " ".join(cmd)
+    print(" ".join(cmd))
     subprocess.call(cmd)
 
 if __name__ == "__main__":
