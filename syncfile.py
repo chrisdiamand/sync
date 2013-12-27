@@ -49,14 +49,20 @@ def syncfile_level(ret_list, lines, pos, parentpath):
     return pos
 
 class SyncFile:
-    def __init__(self, fname):
+    def __init__(self, sync_fname):
         self.includes = []
         self.excludes = []
-        self.fname = fname
-        self.read()
+        self.fname = None
+        self.read(sync_fname)
 
-    def read(self):
-        syncfile = open(self.fname, "r")
+    def read(self, fp):
+        syncfile = None
+        if type(fp) == str:
+            syncfile = open(self.fname, "r")
+            self.fname = fp
+        else:
+            syncfile = fp
+            self.fname = fp.name
         lines = syncfile.readlines()
         syncfile.close()
 
