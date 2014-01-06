@@ -1,0 +1,15 @@
+Music/
+    LeahMcfall
+    Maroon5/Moves*
+    Yes/90125/02*
+SheetMusic/Bach
+
+IGNORE_PATH:
+    SheetMusic/Bach
+        bach-cello-suite-1.pdf
+    src
+    .vimrc
+
+IGNORE_NAME:
+    *.swp
+    .git
