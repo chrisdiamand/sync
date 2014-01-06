@@ -35,10 +35,11 @@ def main():
     print("Parsing '" + args.target + "'")
     t2 = target.parse(args.target)
 
-    print("Includes:")
-    for i in sf.includes:
-        print("  '" + i + "'")
+    print("Includes:", sf.includes)
+    print("Ignore name:", sf.ignore_names)
+    print("Ignore path:", sf.ignore_paths)
     print("Target:", t2)
+    print()
 
     first_root = os.path.join("/home", getpass.getuser())
     t1 = target.parse(first_root)

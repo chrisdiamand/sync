@@ -52,6 +52,17 @@ def syncfile_level(sf, lines, pos, parentpath):
 
     return pos
 
+def remove_comments(lines):
+    i = 0
+    while i < len(lines):
+        # Remove the '\n' from every line
+        line = lines[i].rstrip()
+        pos = line.find("#")
+        if pos != -1:
+            line = line[0:pos] # Remove the comment
+        lines[i] = line
+        i += 1
+
 class SyncFile:
     def __init__(self, sync_fname):
         self.includes = []
@@ -63,12 +74,13 @@ class SyncFile:
     # Add an entry from a syncfile
     def add(self, path):
         assert type(path) == str
-        parts = path.split("/")
-        if parts[0] == "IGNORE_PATH:":
-            self.ignore_paths.append("/".join(parts[1:]))
-        elif parts[0] == "IGNORE_NAME":
-            self.ignore_names.append("/".join(parts[1:]))
+        print("Adding", path)
+        if path.startswith("IGNORE_PATH:/"):
+            self.ignore_paths.append(path[13:])
+        elif path.startswith("IGNORE_NAME:/"):
+            self.ignore_names.append(path[13:])
         else:
+            print("INCLUDE:", path)
             self.includes.append(path)
 
     def read(self, fp):
@@ -80,6 +92,7 @@ class SyncFile:
             syncfile = fp
             self.fname = fp.name
         lines = syncfile.readlines()
+        remove_comments(lines)
         syncfile.close()
 
         self.includes = []
