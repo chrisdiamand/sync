@@ -1,0 +1,16 @@
+# A title comment
+Music/ # This is a comment
+    LeahMcfall
+    Maroon5/Moves*
+    Yes/90125/02*
+SheetMusic/Bach
+
+IGNORE_PATH: # Another comment
+    SheetMusic/Bach # bla bla bla
+        bach-cello-suite-1.pdf
+    src
+    .vimrc
+
+IGNORE_NAME:
+    #*.swp
+    .git
