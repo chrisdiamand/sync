@@ -27,6 +27,10 @@ def syncfile_level(ret_list, lines, pos, parentpath):
 
     while pos < len(lines):
         cur_line = lines[pos]
+        if cur_line.isspace() or cur_line == "":
+            pos += 1
+            continue
+
         cur_il = count_leading_whitespace(cur_line)
         path = os.path.join(parentpath, cur_line.strip())
 

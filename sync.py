@@ -33,7 +33,7 @@ def main():
 
     print("Includes:")
     for i in sf.includes:
-        print("  " + i)
+        print("  '" + i + "'")
     print("Target:", t2)
 
     first_root = os.path.join("/home", getpass.getuser())
