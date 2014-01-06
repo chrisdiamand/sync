@@ -74,23 +74,22 @@ class SyncFile:
     # Add an entry from a syncfile
     def add(self, path):
         assert type(path) == str
-        print("Adding", path)
         if path.startswith("IGNORE_PATH:/"):
             self.ignore_paths.append(path[13:])
         elif path.startswith("IGNORE_NAME:/"):
             self.ignore_names.append(path[13:])
         else:
-            print("INCLUDE:", path)
             self.includes.append(path)
 
     def read(self, fp):
         syncfile = None
         if type(fp) == str:
-            syncfile = open(self.fname, "r")
             self.fname = fp
+            syncfile = open(self.fname, "r")
         else:
             syncfile = fp
             self.fname = fp.name
+
         lines = syncfile.readlines()
         remove_comments(lines)
         syncfile.close()
@@ -114,8 +113,15 @@ def main():
         sys.exit(1)
 
     sync = SyncFile(sys.argv[1])
+    print("INCLUDE:")
     for i in sync.includes:
-        print(i)
+        print("   ", i)
+    print("IGNORE_PATH:")
+    for i in sync.ignore_paths:
+        print("   ", i)
+    print("IGNORE_NAME:")
+    for i in sync.ignore_names:
+        print("   ", i)
 
 if __name__ == "__main__":
     main()
