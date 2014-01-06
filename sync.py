@@ -32,12 +32,9 @@ def main():
     args = parse_args()
 
     sf = syncfile.SyncFile(args.syncfile)
-    print("Parsing '" + args.target + "'")
     t2 = target.parse(args.target)
 
-    print("Includes:", sf.includes)
-    print("Ignore name:", sf.ignore_names)
-    print("Ignore path:", sf.ignore_paths)
+    sf.display()
     print("Target:", t2)
     print()
 

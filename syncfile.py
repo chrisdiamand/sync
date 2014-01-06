@@ -107,21 +107,25 @@ class SyncFile:
                 filenames.append(os.path.relpath(match, start = root))
         return filenames
 
+    # Print out the syncfile
+    def display(self):
+        print("INCLUDE:")
+        for i in self.includes:
+            print("   ", i)
+        print("IGNORE_PATH:")
+        for i in self.ignore_paths:
+            print("   ", i)
+        print("IGNORE_NAME:")
+        for i in self.ignore_names:
+            print("   ", i)
+
 def main():
     if len(sys.argv) != 2:
         print("Usage:", sys.argv[0], "SYNC_FILE")
         sys.exit(1)
 
     sync = SyncFile(sys.argv[1])
-    print("INCLUDE:")
-    for i in sync.includes:
-        print("   ", i)
-    print("IGNORE_PATH:")
-    for i in sync.ignore_paths:
-        print("   ", i)
-    print("IGNORE_NAME:")
-    for i in sync.ignore_names:
-        print("   ", i)
+    sync.display()
 
 if __name__ == "__main__":
     main()
