@@ -3,9 +3,10 @@
 import argparse
 import getpass
 import os
+import subprocess
 import syncfile
-import target
 import sys
+import target
 
 def parse_args():
     descr = "Sync stuff - a frontend for unison and rsync."
@@ -14,19 +15,37 @@ def parse_args():
     p.add_argument("target", type = str)
     return p.parse_args()
 
+# Print a command (array of strings) out in such a way that
+# it can be copied-and-pasted back into the shell.
+def printCommand(cmd, fp = sys.stdout):
+    i = 0
+    while i < len(cmd):
+        s = cmd[i]
+        if " " in s or "\t" in s:
+            s = "'" + s + "'"
+        fp.write(s)
+        if i < len(cmd) - 1:
+            fp.write(" ")
+        i += 1
+    fp.write("\n")
+
 def unison(t1, t2, sf):
-    cmd = ["unison", "-root", t1.unison(), "-root", t2.unison()]
-    cmd += ["-times", "false"]
+    cmd = ["unison", t1.unison(), t2.unison()]
+    cmd += ["-times=false"]
     cmd += ["-auto"]
-    cmd += ["-perms", "0"]
-    cmd += ["-fastcheck", "true"]
+    cmd += ["-perms=0"]
+    cmd += ["-fastcheck=true"]
     for i in sf.glob(t1.unison()):
         cmd += ["-path", i]
     for i in sf.ignore_paths:
         cmd += ["-ignore", "Path " + i]
     for i in sf.ignore_names:
         cmd += ["-ignore", "Name " + i]
-    print(" ".join(cmd))
+
+    printCommand(cmd)
+    print()
+    subprocess.call(cmd)
+
 
 def main():
     args = parse_args()
@@ -35,6 +54,7 @@ def main():
     t2 = target.parse(args.target)
 
     sf.display()
+    print()
     print("Target:", t2)
     print()
 
