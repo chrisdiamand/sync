@@ -20,8 +20,12 @@ def unison(t1, t2, sf):
     cmd += ["-auto"]
     cmd += ["-perms", "0"]
     cmd += ["-fastcheck", "true"]
-    for f in sf.glob(t1.unison()):
-        cmd += ["-path", f]
+    for i in sf.glob(t1.unison()):
+        cmd += ["-path", i]
+    for i in sf.ignore_paths:
+        cmd += ["-ignore", "Path " + i]
+    for i in sf.ignore_names:
+        cmd += ["-ignore", "Name " + i]
     print(" ".join(cmd))
 
 def main():

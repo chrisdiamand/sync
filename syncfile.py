@@ -16,8 +16,8 @@ def count_leading_whitespace(text):
             break
     return c
 
-def syncfile_level(ret_list, lines, pos, parentpath):
-    assert type(ret_list) == list
+def syncfile_level(sf, lines, pos, parentpath):
+    assert type(sf) == SyncFile
     assert type(lines) == list
     assert type(pos) == int
     assert type(parentpath) == str
@@ -39,14 +39,14 @@ def syncfile_level(ret_list, lines, pos, parentpath):
             next_il = count_leading_whitespace(next_line)
 
             if next_il > cur_il:
-                pos = syncfile_level(ret_list, lines, pos + 1, path)
+                pos = syncfile_level(sf, lines, pos + 1, path)
             else:
-                ret_list.append(path)
+                sf.add(path)
 
             if cur_il > next_il:
                 break
         else: # We are at the last entry
-            ret_list.append(path)
+            sf.add(path)
 
         pos += 1
 
@@ -55,9 +55,21 @@ def syncfile_level(ret_list, lines, pos, parentpath):
 class SyncFile:
     def __init__(self, sync_fname):
         self.includes = []
-        self.excludes = []
+        self.ignore_paths = []
+        self.ignore_names = []
         self.fname = None
         self.read(sync_fname)
+
+    # Add an entry from a syncfile
+    def add(self, path):
+        assert type(path) == str
+        parts = path.split("/")
+        if parts[0] == "IGNORE_PATH:":
+            self.ignore_paths.append("/".join(parts[1:]))
+        elif parts[0] == "IGNORE_NAME":
+            self.ignore_names.append("/".join(parts[1:]))
+        else:
+            self.includes.append(path)
 
     def read(self, fp):
         syncfile = None
@@ -71,7 +83,7 @@ class SyncFile:
         syncfile.close()
 
         self.includes = []
-        syncfile_level(self.includes, lines, 0, "")
+        syncfile_level(self, lines, 0, "")
 
     # Expand all wildcards
     def glob(self, root):
