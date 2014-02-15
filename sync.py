@@ -31,6 +31,7 @@ def printCommand(cmd, fp = sys.stdout):
 
 def unison(t1, t2, sf):
     cmd = ["unison", t1.unison(), t2.unison()]
+    cmd += ["-dumbtty"]
     cmd += ["-times=false"]
     cmd += ["-auto"]
     cmd += ["-perms=0"]
@@ -44,8 +45,10 @@ def unison(t1, t2, sf):
 
     printCommand(cmd)
     print()
-    subprocess.call(cmd)
-
+    try:
+        subprocess.call(cmd)
+    except KeyboardInterrupt:
+        sys.exit(1)
 
 def main():
     args = parse_args()
