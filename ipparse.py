@@ -59,26 +59,8 @@ def parse_dest(dst):
     return user, ip
 
 def main():
-    user = ip = None
-    if len(sys.argv) != 2:
-        print("Usage: " + sys.argv[0] + " [USER@][IP_SUBNET].IP_HOST")
-        sys.exit(1)
-
-    root_spec = sys.argv[1]
-
-    try:
-        user, ip = parse_dest(root_spec)
-    except InvalidRootError:
-        print("Error: Invalid root '" + root_spec + "'")
-        sys.exit(1)
-
-    root1 = os.path.join("/home", getpass.getuser())
-    root2 = "ssh://" + user + "@" + ip + "/" + os.path.join("/home", user)
-
-    cmd = ["unison", "homesync", "-root", root1, "-root", root2]
-
-    print(" ".join(cmd))
-    subprocess.call(cmd)
+    print("Run sync.py instead.")
+    sys.exit(1)
 
 if __name__ == "__main__":
     main()
