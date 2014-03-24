@@ -50,8 +50,7 @@ def unison(t1, t2, sf):
     printCommand(cmd)
     print()
     try:
-        #subprocess.call(cmd)
-        pass
+        subprocess.call(cmd)
     except KeyboardInterrupt:
         sys.exit(1)
 
