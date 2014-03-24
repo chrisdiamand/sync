@@ -13,6 +13,10 @@ def parse_args():
     p = argparse.ArgumentParser(description = descr)
     p.add_argument("syncfile", type = argparse.FileType("r"))
     p.add_argument("target", type = str)
+
+    tofrom = p.add_mutually_exclusive_group(required = False)
+    tofrom.add_argument("--oneway", "-o", action = "store_true")
+
     return p.parse_args()
 
 # Print a command (array of strings) out in such a way that
@@ -46,6 +50,23 @@ def unison(t1, t2, sf):
     printCommand(cmd)
     print()
     try:
+        #subprocess.call(cmd)
+        pass
+    except KeyboardInterrupt:
+        sys.exit(1)
+
+def rsync(src, dst, sf):
+    cmd = ["rsync", "-avuR", "--delete"]
+    for i in sf.glob(src.rsync()):
+        print(i)
+        cmd += [i]
+    for i in sf.ignore_paths:
+        cmd += ["--exclude", i]
+    for i in sf.ignore_names:
+        cmd += ["--exclude", i]
+    cmd += [dst.rsync()]
+    printCommand(cmd)
+    try:
         subprocess.call(cmd)
     except KeyboardInterrupt:
         sys.exit(1)
@@ -64,7 +85,10 @@ def main():
     first_root = os.path.join("/home", getpass.getuser())
     t1 = target.parse(first_root)
 
-    unison(t1, t2, sf)
+    if not args.oneway:
+        unison(t1, t2, sf)
+    else: # args.oneway
+        rsync(t1, t2, sf)
 
 if __name__ == "__main__":
     main()

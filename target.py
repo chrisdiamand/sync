@@ -25,6 +25,9 @@ class LocalTarget(Target):
         assert os.path.isdir(tgt)
         self.localdir = os.path.realpath(tgt)
 
+    def rsync(self):
+        return self.localdir
+
     def unison(self):
         return self.localdir
 
@@ -38,6 +41,11 @@ class RemoteTarget(Target):
 
     def parse(self):
         [self.user, self.ip] = ipparse.parse_dest(self.target)
+
+    def rsync(self):
+        ret = self.user + "@" + self.ip
+        ret += os.path.join(":", "home", self.user)
+        return ret
 
     def unison(self):
         ret = "ssh://" + self.user + "@" + self.ip
