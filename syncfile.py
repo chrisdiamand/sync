@@ -71,6 +71,12 @@ class SyncFile:
         self.fname = None
         self.read(sync_fname)
 
+    # Merge another (included) syncfile into this one
+    def merge(self, sf):
+        self.includes += sf.includes
+        self.ignore_paths += sf.ignore_paths
+        self.ignore_names += sf.ignore_names
+
     # Add an entry from a syncfile
     def add(self, path):
         assert type(path) == str
@@ -78,6 +84,9 @@ class SyncFile:
             self.ignore_paths.append(path[13:])
         elif path.startswith("IGNORE_NAME:/"):
             self.ignore_names.append(path[13:])
+        elif path.startswith("INCLUDE:/"):
+            sf = SyncFile(path[9:])
+            self.merge(sf)
         else:
             self.includes.append(path)
 
