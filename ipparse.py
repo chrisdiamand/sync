@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import getip
 import getpass
 import os
 import subprocess
@@ -10,6 +9,7 @@ class InvalidRootError(Exception):
     pass
 
 def get_best_interface():
+    import getip
     ifs = getip.get_interfaces(ign_loopback = True, ign_public = True)
     if len(ifs) > 0:
         return ifs[0]
