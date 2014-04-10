@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import getip
 import getpass
 import os
 import subprocess
@@ -8,20 +9,21 @@ import sys
 class InvalidRootError(Exception):
     pass
 
-def getip():
-    import socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(('8.8.8.8', 80))
-    ip = s.getsockname()[0]
-    s.close()
-    return ip
+def get_best_interface():
+    ifs = getip.get_interfaces(ign_loopback = True, ign_public = True)
+    if len(ifs) > 0:
+        return ifs[0]
+    ifs = getip.get_interfaces(ign_loopback = True)
+    if len(ifs) > 0:
+        return ifs[0]
+    print("Error: Cannot complete IP address: No network interfaces")
+    sys.exit(1)
 
 # Return a complete IP address based on the last part
 def complete_IP(partial):
-    complete_ip = getip()
-    parts = complete_ip.split(".")
-    parts[3] = partial
-    return ".".join(parts)
+    ip = get_best_interface().ip
+    ip.parts[3] = int(partial)
+    return str(ip)
 
 # Parse a specification for the other root to be synced.
 # Allow: 190 (infers username@123.456.789.190)
