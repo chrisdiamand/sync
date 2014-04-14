@@ -6,6 +6,8 @@ import os
 def parse(tgt):
     if os.path.isdir(tgt):
         return LocalTarget(tgt)
+    elif tgt == "adb":
+        return AndroidTarget(tgt)
     else:
         return RemoteTarget(tgt)
 
@@ -18,6 +20,20 @@ class Target:
         return None
     def __repr__(self):
         return "<?>"
+
+class AndroidTarget(Target):
+    def __init__(self, tgt):
+        self.DIR = "/storage/sdcard1/"
+
+    def rsync(self):
+        return "adb:" + self.DIR
+
+    def unison(self):
+        print("Error: Android does not support unison!")
+        sys.exit(1)
+
+    def __repr__(self):
+        return self.rsync()
 
 class LocalTarget(Target):
     def __init__(self, tgt):
