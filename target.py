@@ -2,6 +2,7 @@
 
 import ipparse
 import os
+import sys
 
 def parse(tgt):
     if os.path.isdir(tgt):
