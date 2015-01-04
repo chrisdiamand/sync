@@ -55,7 +55,7 @@ def unison(t1, t2, sf):
         sys.exit(1)
 
 def rsync(src, dst, sf):
-    cmd = ["rsync", "-avuR", "--delete"]
+    cmd = ["rsync", "-avuR", "--modify-window=1", "--progress", "--delete"]
     for i in sf.glob(src.rsync()):
         print(i)
         cmd += [i]
