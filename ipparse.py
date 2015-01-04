@@ -25,6 +25,12 @@ def complete_IP(partial):
     ip.parts[3] = int(partial)
     return str(ip)
 
+def is_ip_addr(string):
+    for c in string:
+        if (not c.isdigit()) and (c != '.'):
+            return False
+    return True
+
 # Parse a specification for the other root to be synced.
 # Allow: 190 (infers username@123.456.789.190)
 #        username@190
@@ -47,7 +53,7 @@ def parse_dest(dst):
         raise InvalidRootError()
 
     # Parse the rest of it
-    if host.isalpha(): # It's a hostname
+    if not is_ip_addr(host):
         ip = host
     else:
         parts = host.split(".")
