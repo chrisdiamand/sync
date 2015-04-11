@@ -33,6 +33,13 @@ def printCommand(cmd, fp = sys.stdout):
         i += 1
     fp.write("\n")
 
+def addFollows(p):
+    cmd = []
+    if os.path.isdir(p) or os.path.islink(p):
+        cmd += ["-follow", "Path " + p]
+        cmd += addFollows(os.path.dirname(p))
+    return cmd
+
 def unison(t1, t2, sf):
     cmd = ["unison", t1.unison(), t2.unison()]
     cmd += ["-dumbtty"]
@@ -42,6 +49,7 @@ def unison(t1, t2, sf):
     cmd += ["-fastcheck=true"]
     for i in sf.glob(t1.unison()):
         cmd += ["-path", i]
+        cmd += addFollows(i)
     for i in sf.ignore_paths:
         cmd += ["-ignore", "Path " + i]
     for i in sf.ignore_names:
