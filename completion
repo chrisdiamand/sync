@@ -1,27 +1,17 @@
 #!/usr/bin/env bash
+    function _sync_py_remove_items {
+        python3 - $@ <<EndOfPython
+import sys
+s = sys.argv[1]
+for arg in s.split(' '):
+    arg = arg.strip()
+    if arg not in sys.argv[2:]:
+        sys.stdout.write(arg + ' ')
+sys.stdout.write('\n')
+EndOfPython
+    }
 
 _sync_py() {
-    function _sync_py_remove_items {
-        local oldIFS="$IFS"
-        local ret="" cur=
-        local arr=()
-        IFS=' ' read -r -a arr <<< "$1"
-
-        shift
-        for ((i=0; i < ${#arr[@]}; i++)); do
-            cur=${arr[i]}
-            if [[ ! "$@" =~ "$cur" ]]; then
-                if [[ -z "$ret" ]]; then
-                    ret="$cur"
-                else
-                    ret="$ret $cur"
-                fi
-            fi
-        done
-
-        echo "$ret"
-        IFS="$oldIFS"
-    }
 
     local cur=${COMP_WORDS[COMP_CWORD]}
     local opts="-o --oneway -h --help"
@@ -58,7 +48,5 @@ _sync_py() {
     elif [[ -n "$syncfile" && -z "$target" ]]; then
         COMPREPLY+=( $(compgen -d -- "$cur") )
     fi
-
-    unset -f _sync_py_remove_items
 }
 complete -o filenames -F _sync_py sync.py
