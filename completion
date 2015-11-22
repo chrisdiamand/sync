@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+_sync_py() {
+    function _sync_py_remove_items {
+        local oldIFS="$IFS"
+        local ret="" cur=
+        local arr=()
+        IFS=' ' read -r -a arr <<< "$1"
+
+        shift
+        for ((i=0; i < ${#arr[@]}; i++)); do
+            cur=${arr[i]}
+            if [[ ! "$@" =~ "$cur" ]]; then
+                if [[ -z "$ret" ]]; then
+                    ret="$cur"
+                else
+                    ret="$ret $cur"
+                fi
+            fi
+        done
+
+        echo "$ret"
+        IFS="$oldIFS"
+    }
+
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    local opts="-o --oneway -h --help"
+    local syncfile_list="`cd && ls .sync_*`"
+    local syncfile=
+    local target=
+
+    for ((i=1; i < $COMP_CWORD; i++)); do
+        local word=${COMP_WORDS[i]}
+        if [[ $opts =~ "$word" ]]; then
+            # This is an option. Remove it from the list of remaining options.
+            case "$word" in
+            -o|--oneway)
+                opts=`_sync_py_remove_items "$opts" -o --oneway`
+                ;;
+            -h|--help)
+                opts=`_sync_py_remove_items "$opts" -h --help`
+                ;;
+            esac
+        else
+            # We've found a non-option argument. If we haven't seen a syncfile
+            # yet, it's that. Otherwise, it's a target directory.
+            if [[ -z "$syncfile" ]]; then
+                syncfile="$word"
+            elif [[ -n "$syncfile" && -z "$target" ]]; then
+                target="$word"
+            fi
+        fi
+    done
+
+    COMPREPLY=( $(compgen -W " $opts" -- "$cur") )
+    if [[ -z "$syncfile" ]]; then
+        COMPREPLY+=( $(compgen -W "$syncfile_list" -- "$cur") )
+    elif [[ -n "$syncfile" && -z "$target" ]]; then
+        COMPREPLY+=( $(compgen -d -- "$cur") )
+    fi
+
+    unset -f _sync_py_remove_items
+}
+complete -o filenames -F _sync_py sync.py
