@@ -101,30 +101,3 @@ def check_exists_or_ip(dst):
             sys.exit(1)
 
     return dst
-
-###################################################
-
-SYNCFILE = os.path.expanduser("~/.phonesync.txt")
-
-if len(sys.argv) < 2:
-    print("Usage: " + sys.argv[0] + " MOUNTPOINT/IP")
-    sys.exit(1)
-
-mountpoint = None
-dst = check_exists_or_ip(sys.argv[1])
-
-home = os.path.expanduser("~")
-cmd = ["unison", "-fat", "-fastcheck", "true", "-dumbtty", "-root", home, "-root", dst, "-auto"]
-
-sf = SyncFile(SYNCFILE)
-filenames = sf.glob(home)
-for f in filenames:
-    cmd += ["-path", f]
-
-print("Starting unison...")
-try:
-    subprocess.call(cmd)
-except KeyboardInterrupt:
-    print("Interrupted, exiting.")
-    sys.exit(1)
-print("Done.");
